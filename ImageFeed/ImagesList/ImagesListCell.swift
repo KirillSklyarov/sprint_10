@@ -8,6 +8,7 @@ final class ImagesListCell: UITableViewCell {
     @IBOutlet weak var gradientView: UIView!
     
     static let reuseIdentifier = "ImagesListCell"
+    
 }
 
 
