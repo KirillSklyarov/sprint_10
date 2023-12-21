@@ -2,16 +2,18 @@ import UIKit
 
 final class ImagesListCell: UITableViewCell {
     
+    // MARK: - IB Outlets
     @IBOutlet weak var cellImage: UIImageView!
     @IBOutlet weak var cellButton: UIButton!
     @IBOutlet weak var cellDateLabel: UILabel!
     @IBOutlet weak var gradientView: UIView!
     
+    // MARK: - Public Properties
     static let reuseIdentifier = "ImagesListCell"
-    
 }
 
 
+// MARK: - Public Methods
 extension ImagesListCell {
     func setGradient() {
         let gradient: CAGradientLayer = CAGradientLayer()

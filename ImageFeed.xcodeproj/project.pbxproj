@@ -62,11 +62,11 @@
 		7314029D2B1DC6C400FDBD5F /* ImageFeed */ = {
 			isa = PBXGroup;
 			children = (
-				736E793F2B32F80900DFC9B5 /* SingleView */,
+				731402B42B1DDA6400FDBD5F /* ImagesList */,
 				736E793B2B32E2B300DFC9B5 /* ProfileView */,
+				736E793F2B32F80900DFC9B5 /* SingleView */,
 				731402B72B1E4DB800FDBD5F /* Services */,
 				731402B62B1E4DA400FDBD5F /* Storyboard */,
-				731402B42B1DDA6400FDBD5F /* ImagesList */,
 			);
 			path = ImageFeed;
 			sourceTree = "<group>";

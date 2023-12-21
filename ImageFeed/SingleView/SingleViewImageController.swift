@@ -1,31 +1,14 @@
-//
-//  SingleViewImageController.swift
-//  ImageFeed
-//
-//  Created by Kirill Sklyarov on 20.12.2023.
-//
-
 import UIKit
 
 final class SingleViewImageController: UIViewController {
     
+    // MARK: - IB Outlets
     @IBOutlet weak var backButton: UIButton!
     @IBOutlet weak var imageView: UIImageView!
     @IBOutlet weak var scrollView: UIScrollView!
     @IBOutlet weak var shareButton: UIButton!
     
-    @IBAction func backButtonTapped(_ sender: Any) {
-        dismiss(animated: true)
-    }
-    
-    
-    @IBAction func sharingAction(_ sender: Any) {
-        
-        let items: [UIImage] = [image]
-        let activityController = UIActivityViewController(activityItems: items, applicationActivities: nil)
-        self.present(activityController, animated: true)
-    }
-    
+    // MARK: - Public Properties
     var image: UIImage! {
         didSet {
             guard isViewLoaded else { return }
@@ -34,6 +17,18 @@ final class SingleViewImageController: UIViewController {
         }
     }
     
+    // MARK: - IB Actions
+    @IBAction func backButtonTapped(_ sender: Any) {
+        dismiss(animated: true)
+    }
+    
+    @IBAction func sharingAction(_ sender: Any) {
+        let items: [UIImage] = [image]
+        let activityController = UIActivityViewController(activityItems: items, applicationActivities: nil)
+        self.present(activityController, animated: true)
+    }
+    
+    // MARK: - View Life Cycles
     override func viewDidLoad() {
         super.viewDidLoad()
         imageView.image = image
@@ -43,13 +38,14 @@ final class SingleViewImageController: UIViewController {
     }
 }
 
-
+// MARK: - UIScrollViewDelegate
 extension SingleViewImageController: UIScrollViewDelegate {
     func viewForZooming(in scrollView: UIScrollView) -> UIView? {
         imageView
     }
 }
 
+// MARK: - Private method
 extension SingleViewImageController {
     private func rescaleAndCenterImageInScrollView(image: UIImage) {
         let minZoomScale = scrollView.minimumZoomScale
