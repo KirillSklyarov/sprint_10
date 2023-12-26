@@ -3,16 +3,16 @@ import UIKit
 final class ProfileViewController: UIViewController {
     
     // MARK: - Private properties
-    private let avatarImageSize = 70.0
+    private lazy var avatarImageSize = 70.0
     
-    private let avatarImage: UIImageView = {
+    private lazy var avatarImage: UIImageView = {
         let image = UIImageView()
         image.image = UIImage(named: "Photo")
         image.tintColor = .gray
         return image
     }()
     
-    private let nameLabel: UILabel = {
+    private lazy var nameLabel: UILabel = {
         let label = UILabel()
         label.text = "Екатерина Новикова"
         label.textColor = .ypWhite
@@ -20,7 +20,7 @@ final class ProfileViewController: UIViewController {
         return label
     }()
     
-    private let nicknameLabel: UILabel = {
+    private lazy var nicknameLabel: UILabel = {
         let label = UILabel()
         label.text = "@ekaterina_nov"
         label.textColor = .ypGray
@@ -28,7 +28,7 @@ final class ProfileViewController: UIViewController {
         return label
     }()
     
-    private let textLabel: UILabel = {
+    private lazy var textLabel: UILabel = {
         let label = UILabel()
         label.text = "Hello, world!"
         label.textColor = .ypWhite
@@ -36,7 +36,7 @@ final class ProfileViewController: UIViewController {
         return label
     }()
     
-    private let exitButton: UIButton = {
+    private lazy var exitButton: UIButton = {
         let buttonImage = UIImage(named: "Exit")
         guard let buttonImage = buttonImage else {return UIButton()}
         
