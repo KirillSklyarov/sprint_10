@@ -10,16 +10,20 @@ protocol WebViewControllerDelegate: AnyObject {
 
 final class WebViewViewController: UIViewController {
     
-    let identitfier = "WebViewViewController"
-    
-    weak var delegate: WebViewControllerDelegate?
-    
+    // MARK: - IB Outlets
     @IBOutlet weak var progressView: UIProgressView!
     @IBOutlet weak var webView: WKWebView!
     
+    // MARK: - Public Properties
+    weak var delegate: WebViewControllerDelegate?
+    
+    // MARK: - Private properties
+    private let identitfier = "WebViewViewController"
+    
+    
+    // MARK: - View Life Cycles
     override func viewDidLoad() {
         super.viewDidLoad()
-        
         webView.navigationDelegate = self
         
         guard var urlComponents = URLComponents(string: UnsplashAuthorizeURLString) else {
@@ -33,15 +37,14 @@ final class WebViewViewController: UIViewController {
             URLQueryItem(name: "scope", value: accessScope)
         ]
         let url = urlComponents.url!
-        
         let request = URLRequest(url: url)
         webView.load(request)
-        
         updateProgress()
     }
     
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
         webView.addObserver(
             self,
             forKeyPath: #keyPath(WKWebView.estimatedProgress),
@@ -49,13 +52,15 @@ final class WebViewViewController: UIViewController {
             context: nil)
         
         updateProgress()
+        
     }
     
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
         webView.removeObserver(self, forKeyPath: #keyPath(WKWebView.estimatedProgress), context: nil)
     }
     
+    // MARK: - Overrides Methods
     override func observeValue(
         forKeyPath keyPath: String?,
         of object: Any?,
@@ -68,38 +73,38 @@ final class WebViewViewController: UIViewController {
             }
         }
     
-    func updateProgress() {
-        progressView.progress = Float(webView.estimatedProgress)
-        progressView.isHidden = fabs(webView.estimatedProgress - 1.0) <= 0.0001
-    }
-
-    
+    // MARK: - IB Actions
     @IBAction func didTappBackButton(_ sender: Any) {
         delegate?.webViewViewControllerDidCancel(self)
     }
+    
+    // MARK: - Private Methods
+    private func updateProgress() {
+        progressView.progress = Float(webView.estimatedProgress)
+        progressView.isHidden = fabs(webView.estimatedProgress - 1.0) <= 0.0001
+    }
 }
 
+// MARK: - Delegate
 extension WebViewViewController: WKNavigationDelegate {
-    func webView(_ webView: WKWebView,
-                 decidePolicyFor navigationAction: WKNavigationAction,
-                 decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
-        if let code = code(from: navigationAction) { //1
-            //TODO: process code                     //2
-            decisionHandler(.cancel) //3
+    func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
+        if let code = code(from: navigationAction) {
+            delegate?.webViewViewController(self, didAuthenticateWithCode: code)
+            decisionHandler(.cancel)
         } else {
-            decisionHandler(.allow) //4
+            decisionHandler(.allow)
         }
     }
     
     private func code(from navigationAction: WKNavigationAction) -> String? {
         if
-            let url = navigationAction.request.url,                         //1
-            let urlComponents = URLComponents(string: url.absoluteString),  //2
-            urlComponents.path == "/oauth/authorize/native",                //3
-            let items = urlComponents.queryItems,                           //4
-            let codeItem = items.first(where: { $0.name == "code" })        //5
+            let url = navigationAction.request.url,
+            let urlComponents = URLComponents(string: url.absoluteString),
+            urlComponents.path == "/oauth/authorize/native",
+            let items = urlComponents.queryItems,
+            let codeItem = items.first(where: { $0.name == "code" })
         {
-            return codeItem.value                                           //6
+            return codeItem.value
         } else {
             return nil
         }

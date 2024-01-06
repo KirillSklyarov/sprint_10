@@ -10,7 +10,6 @@ struct OAuthTokenResponseBody: Decodable {
         case accessToken = "access_token"
         case tokenType = "token_type"
         case scope = "scope"
-        case createdAt = "created_At"
+        case createdAt = "created_at"
     }
-    
 }

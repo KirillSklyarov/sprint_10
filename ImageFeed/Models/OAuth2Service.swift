@@ -2,8 +2,10 @@ import Foundation
 
 final class OAuth2Service {
     
+    // MARK: - Public properties
     static let shared = OAuth2Service()
     
+    // MARK: - Private properties
     private let urlSession = URLSession.shared
     
     private (set) var authToken: String? {
@@ -15,23 +17,33 @@ final class OAuth2Service {
         }
     }
     
+    // MARK: - Public methods
     func fetchOAuthToken(_ code: String, completion: @escaping (Result<String, Error>) -> Void) {
+        let completionInMainThread: (Result<String, Error>) -> Void = { result in
+            DispatchQueue.main.async {
+                completion(result)
+            }
+        }
+        
         let request = authTokenRequest(code: code)
         let task = object(for: request) { [weak self] result in
             guard let self = self else { return }
+            print(result)
             switch result {
             case .success(let body):
-                let authToken = body.accessToken
-                self.authToken = authToken
-                completion(.success(authToken))
+                print("Success")
+                self.authToken = body.accessToken
+                completionInMainThread(.success(body.accessToken))
             case .failure(let error):
-                completion(.failure(error))
+                print("Failure")
+                completionInMainThread(.failure(error))
             }
         }
         task.resume()
     }
 }
 
+// MARK: - Extensions: private methods
 extension OAuth2Service {
     private func authTokenRequest(code: String) -> URLRequest {
         URLRequest.makeHTTPRequest(
